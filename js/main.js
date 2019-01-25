@@ -43129,43 +43129,37 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 
 var Chart = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/src/chart.js");
 
-var $canvas = $('#chart__canvas'); //
-// //prendo dati dal DOM
-// var aData = $canvas.attr('data-chart');
-//
-// var MONTH = [
-//   'January',
-//   'February',
-//   'March',
-//   'April',
-//   'May',
-//   'June',
-//   'July',
-//   'August',
-//   'September',
-//   'October',
-//   'November',
-//   'December'
-// ];
-//
-// $(document).ready(function(){
-//   var myChart = new Chart($canvas, {
-//     type: 'line',
-//     data: {
-//       labels: MONTH,
-//       datasets: [{
-//         label: "Andamento mensile delle vendite",
-//         backgroundColor: 'rgb(255, 99, 132)',
-//         borderColor: 'rgb(255, 99, 132)',
-//         data: JSON.parse(aData), //parse sui dati ricevuti da DOM
-//       }]
-//     },
-//     options: {
-//
-//     }
-//   });
-//
-// });
+var $canvas = $('.chart-sales-month');
+var MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+$(document).ready(function () {
+  $.ajax({
+    url: 'http://192.168.1.117/php-chartbool/data.php',
+    method: 'GET',
+    success: function success(data) {
+      addChart(JSON.parse(data));
+    },
+    error: function error(err) {
+      console.log(err);
+    }
+  });
+});
+
+function addChart(aData) {
+  var myChart = new Chart($canvas, {
+    type: 'line',
+    data: {
+      labels: MONTH,
+      datasets: [{
+        label: "Andamento mensile delle vendite",
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: aData //parse sui dati ricevuti da DOM
+
+      }]
+    },
+    options: {}
+  });
+}
 
 /***/ }),
 
