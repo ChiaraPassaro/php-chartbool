@@ -7,7 +7,7 @@
   </head>
   <body>
     <div class="chart">
-      <canvas id="chart__canvas"></canvas>
+      <canvas id="chart__canvas" data-chart="<?php /*stampo con data*/ echo json_encode($data); ?>"></canvas>
     </div>
     <script src="js/main.js" charset="utf-8"></script>
   </body>
