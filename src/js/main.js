@@ -26,8 +26,10 @@ $(document).ready(function () {
             level: levelUser
         },
         success: function (data) {
-            console.log(data);
-            modifyData(JSON.parse(data));
+            //console.log(data);
+            if(levelUser){
+                modifyData(JSON.parse(data));
+            }
         },
         error: function (err) {
             console.log(err);

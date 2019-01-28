@@ -43141,8 +43141,10 @@ $(document).ready(function () {
       level: levelUser
     },
     success: function success(data) {
-      console.log(data);
-      modifyData(JSON.parse(data));
+      //console.log(data);
+      if (levelUser) {
+        modifyData(JSON.parse(data));
+      }
     },
     error: function error(err) {
       console.log(err);
