@@ -42,7 +42,8 @@ function modifyData(aData) {
             "backgroundColor": [],
             "labels": MONTH,
             "data": [],
-            "type": ''
+            "type": '',
+            "access": ''
         },
         "fatturato_by_agent": {
             "canvas": $('.chart-sales-man'),
@@ -50,23 +51,67 @@ function modifyData(aData) {
             "backgroundColor": [],
             "labels": [],
             "data": [],
-            "type": ''
+            "type": '',
+            "access": ''
+        },
+        "team_efficiency": {
+            "canvas": $('.chart-team-effienciency'),
+            "label": 'Efficienza Team',
+            "labels": MONTH,
+            "datasets": [],
+            "type": '',
+            "options": {
+                scales: {
+                    yAxes: []
+                }
+            },
+            "access": ''
         }
     };
 
-    for (var key in aData) {
-        var thisChart = oCharts[key];
-        thisChart.type = aData[key].type;
+    for (var chartData in aData) {
+        var thisChart = oCharts[chartData];
+        thisChart.type = aData[chartData].type;
+        var index = 1;
 
-        for (var subkey in aData[key].data) {
-            //se labels nonha elementi li inserisco
-            if(thisChart.labels.length < Object.keys(aData[key].data).length) {
-                thisChart.labels.push(subkey);
+        for (var dataInChartData in aData[chartData].data) {
+            var thisData = [];
+            //se è un oggetto e non un valore singolo
+            if(typeof aData[chartData].data[dataInChartData] === 'object'){
+                for (var keys in aData[chartData].data[dataInChartData]){
+                    thisData.push(aData[chartData].data[dataInChartData][keys]);
+                }
+
+                thisChart.datasets.push(
+                    {
+                        label: dataInChartData ,
+                        borderColor: createColorRandom(1),
+                        backgroundColor: createColorRandom(0.5),
+                        fill: false,
+                        data: thisData,
+                        yAxisID: 'y-axis'
+                    }
+                );
+
+                thisChart.options.scales.yAxes.push(
+                    {
+                        id: 'y-axis',
+                        type: 'linear'
+                    }
+                )
             }
-            //inserisco i dati
-            thisChart.data.push(aData[key].data[subkey]);
-            //inserisco dei colori random
-            thisChart.backgroundColor.push(createColorRandom(0.8));
+            else{
+                //inserisco i dati
+                thisChart.data.push(aData[chartData].data[dataInChartData]);
+                //inserisco dei colori random
+                thisChart.backgroundColor.push(createColorRandom(0.8));
+            }
+                //se labels non ha elementi li inserisco
+                if(thisChart.labels.length < Object.keys(aData[chartData].data).length) {
+                    thisChart.labels.push(dataInChartData);
+                }
+                thisChart.access = aData[chartData].access[dataInChartData];
+                index++;
         }
 
         addChart(thisChart);
@@ -75,21 +120,29 @@ function modifyData(aData) {
 
 //Funzione che inserisce chart
 function addChart(aData) {
+    var dataset;
+    //se dato singolo
+    if(aData.data){
+        dataset = [{
+            label: aData.label,
+            backgroundColor: aData.backgroundColor,
+            borderColor: 'rgb(0, 0, 0)',
+            data: aData.data
+        }];
+    //se array di dati
+    } else {
+        dataset =  aData.datasets
+    }
 
     var myChart = new Chart(aData.canvas, {
         type: aData.type,
         data: {
             labels: aData.labels,
-            datasets: [{
-                label: aData.label,
-                backgroundColor: aData.backgroundColor,
-                borderColor: 'rgb(0, 0, 0)',
-                data: aData.data,
-            }]
+            datasets: dataset
         },
-        options: {}
+        options: aData.options || null
     });
-
+    
 }
 
 function createColorRandom(opacity) {

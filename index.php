@@ -30,6 +30,18 @@
       </div>
       <div class="table-for-chart table-sales-man"></div>
     </div>
+    <div class="chart__team chart__closed">
+      <div class="chart__close">
+        <i class="fas fa-window-close"></i>
+      </div>
+      <div>
+        <h2 class="chart__title">Vendite per Agente</h2>
+      </div>
+      <div class="chart__canvas">
+        <canvas class="chart-team-effienciency"></canvas>
+      </div>
+      <div class="table-for-chart table-sales-man"></div>
+    </div>
 
     <script src="js/main.js" charset="utf-8"></script>
   </body>
