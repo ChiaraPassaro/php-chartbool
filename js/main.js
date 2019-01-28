@@ -43131,13 +43131,17 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 
 var Chart = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/src/chart.js");
 
+var levelUser = $('body').data('level');
 var MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 $(document).ready(function () {
   $.ajax({
     url: 'http://192.168.1.117/php-chartbool/server.php',
     method: 'GET',
+    data: {
+      level: levelUser
+    },
     success: function success(data) {
-      //console.log(JSON.parse(data));
+      console.log(data);
       modifyData(JSON.parse(data));
     },
     error: function error(err) {
@@ -43219,7 +43223,7 @@ function modifyData(aData) {
         thisChart.labels.push(dataInChartData);
       }
 
-      thisChart.access = aData[chartData].access[dataInChartData];
+      thisChart.access = aData[chartData].access;
       index++;
     }
 

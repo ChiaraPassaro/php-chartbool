@@ -1,5 +1,6 @@
 var $ = require("jquery");
 var Chart = require('chart.js');
+var levelUser = $('body').data('level');
 
 var MONTH = [
     'January',
@@ -21,8 +22,11 @@ $(document).ready(function () {
     $.ajax({
         url: 'http://192.168.1.117/php-chartbool/server.php',
         method: 'GET',
+        data:{
+            level: levelUser
+        },
         success: function (data) {
-            //console.log(JSON.parse(data));
+            console.log(data);
             modifyData(JSON.parse(data));
         },
         error: function (err) {
@@ -110,7 +114,7 @@ function modifyData(aData) {
                 if(thisChart.labels.length < Object.keys(aData[chartData].data).length) {
                     thisChart.labels.push(dataInChartData);
                 }
-                thisChart.access = aData[chartData].access[dataInChartData];
+                thisChart.access = aData[chartData].access;
                 index++;
         }
 
@@ -142,7 +146,7 @@ function addChart(aData) {
         },
         options: aData.options || null
     });
-    
+
 }
 
 function createColorRandom(opacity) {
