@@ -18,7 +18,7 @@
       <div class="table-for-chart table-sales-month"></div>
     </div>
 
-    <!-- <div class="chart__peragente chart__closed">
+    <div class="chart__peragente chart__closed">
       <div class="chart__close">
         <i class="fas fa-window-close"></i>
       </div>
@@ -29,7 +29,7 @@
         <canvas class="chart-sales-man"></canvas>
       </div>
       <div class="table-for-chart table-sales-man"></div>
-    </div> -->
+    </div>
 
     <script src="js/main.js" charset="utf-8"></script>
   </body>
