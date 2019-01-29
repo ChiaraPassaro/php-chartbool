@@ -43132,7 +43132,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 var Chart = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/src/chart.js");
 
 var levelUser = $('body').data('level');
-var thisColor = new Hsl(0, 89, 100);
+var thisColor = new Hsl(0, 89, 50);
 console.log(thisColor.printHsl());
 var palette = new SetColorPalette(thisColor);
 var MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -43217,10 +43217,12 @@ function modifyData(aData) {
           thisData.push(aData[chartData].data[dataInChartData][keys]);
         }
 
+        var thisColor = colors[index - 1].printHsl();
+        console.log(thisColor);
         thisChart.datasets.push({
           label: dataInChartData,
-          borderColor: colors[index - 1].printHsl(),
-          backgroundColor: colors[index - 1].printHsl(),
+          borderColor: thisColor.toString(),
+          backgroundColor: thisColor.toString(),
           fill: false,
           data: thisData,
           yAxisID: 'y-axis'
@@ -43233,7 +43235,9 @@ function modifyData(aData) {
         //inserisco i dati
         thisChart.data.push(aData[chartData].data[dataInChartData]); //inserisco dei colori random
 
-        thisChart.backgroundColor.push(colors[index - 1].printHsl());
+        var thisColor = colors[index - 1].printHsl();
+        console.log(thisColor);
+        thisChart.backgroundColor.push(thisColor.toString());
       } //se labels non ha elementi li inserisco
 
 
@@ -43245,7 +43249,6 @@ function modifyData(aData) {
       index++;
     }
 
-    console.log(thisChart);
     addChart(thisChart);
   }
 } //Funzione che inserisce chart
@@ -43258,13 +43261,14 @@ function addChart(aData) {
     dataset = [{
       label: aData.label,
       backgroundColor: aData.backgroundColor,
-      borderColor: 'rgb(0, 0, 0)',
+      borderColor: 'hsl(100,89%,100%)',
       data: aData.data
     }]; //se array di dati
   } else {
     dataset = aData.datasets;
   }
 
+  console.log(dataset);
   var myChart = new Chart(aData.canvas, {
     type: aData.type,
     data: {
@@ -43336,7 +43340,7 @@ function Hsl(degree, saturation, brightness) {
   };
 
   this.printHsl = function () {
-    return 'hsla(' + _degree + ', ' + _saturation + '%, ' + _brightness + '%, ' + '0.5)';
+    return 'hsl(' + _degree + ',' + _saturation + '%,' + _brightness + '%)';
   };
 
   return this;
