@@ -11,7 +11,8 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.js('src/js/main.js', 'js/').sass('src/scss/style.scss', 'css/');
+mix.js('src/js/main.js', 'js/');
+mix.sass('src/scss/style.scss', 'css/');
 
 // Full API
 // mix.js(src, output);
@@ -26,7 +27,7 @@ mix.js('src/js/main.js', 'js/').sass('src/scss/style.scss', 'css/');
 // mix.postCss(src, output, [require('postcss-some-plugin')()]);
 // mix.browserSync('my-site.test');
 // mix.combine(files, destination);
-// mix.babel(files, destination); <-- Identical to mix.combine(), but also includes Babel compilation.
+// (files, destination); <-- Identical to mix.combine(), but also includes Babel compilation.
 // mix.copy(from, to);
 // mix.copyDirectory(fromDir, toDir);
 // mix.minify(file);
