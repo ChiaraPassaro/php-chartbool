@@ -1,9 +1,10 @@
 var $ = require("jquery");
 var Chart = require('chart.js');
+
 var levelUser = $('body').data('level');
 
-var thisColor = new Hsl(89,89,50);
-var palette =  new SetColorPalette(thisColor);
+var baseColorChart = new Hsl(89,89,65);
+var palette =  new SetColorPalette(baseColorChart);
 
 var MONTH = [
     'January',
@@ -29,7 +30,7 @@ $(document).ready(function () {
             level: levelUser
         },
         success: function (data) {
-            //console.log(data);
+
             if(levelUser){
                 var processedData = processData(JSON.parse(data));
 
@@ -52,7 +53,8 @@ function processData(aData) {
     //preparo i dati per chartjs
     var oCharts = {
         "fatturato": {
-            "canvas": $('.chart-sales-month'),
+            "template": '.chart-sales-month',
+            "canvas": '.chart-sales-month',
             "label": 'Fatturato mensile',
             "backgroundColor": [],
             "borderColor": [],
@@ -62,7 +64,8 @@ function processData(aData) {
             "access": ''
         },
         "fatturato_by_agent": {
-            "canvas": $('.chart-sales-man'),
+            "template": '.chart-sales-man',
+            "canvas": '.chart-sales-man',
             "label": 'Fatturato per Agente',
             "backgroundColor": [],
             "borderColor": [],
@@ -72,7 +75,8 @@ function processData(aData) {
             "access": ''
         },
         "team_efficiency": {
-            "canvas": $('.chart-team-effienciency'),
+            "template": '.chart-team',
+            "canvas": '.chart-team',
             "label": 'Efficienza Team',
             "labels": MONTH,
             "datasets": [],
@@ -100,7 +104,6 @@ function processData(aData) {
         //se è un numero dispari aumento di 1 colorpalette accetta solo dati pari
         if(!isEven(numColors)){
             numColors++;
-            var notEven = true;
         }
 
         //setto gli step 140 sono i gradi massimi
@@ -129,7 +132,7 @@ function processData(aData) {
                 thisChart.datasets.push(
                     {
                         label: dataInChartData ,
-                        borderColor: thisColorBorder ,
+                        borderColor: thisColorBorder,
                         backgroundColor:  thisColor,
                         fill: false,
                         data: thisData,
@@ -144,27 +147,29 @@ function processData(aData) {
                     }
                 )
             }
+            //se dato singolo
             else{
                 //inserisco i dati
                 thisChart.data.push(aData[chartData].data[dataInChartData]);
 
                 //setto i colori
                 thisColor = colors[index-1].printHsl();
-                colors[index-1].setBrightness(70);
+                colors[index-1].setBrightness(40);
                 thisColorBorder = colors[index-1].printHsl();
 
                 thisChart.backgroundColor.push(thisColor);
                 thisChart.borderColor.push(thisColorBorder);
             }
-                //se labels non ha elementi li inserisco
-                if(thisChart.labels.length < Object.keys(aData[chartData].data).length) {
-                    thisChart.labels.push(dataInChartData);
-                }
 
-                //inserisco livello accesso
-                thisChart.access = aData[chartData].access;
+            //se labels non ha elementi li inserisco
+            if(thisChart.labels.length < Object.keys(aData[chartData].data).length) {
+                thisChart.labels.push(dataInChartData);
+            }
 
-                index++;
+            //inserisco livello accesso
+            thisChart.access = aData[chartData].access;
+
+            index++;
         }
 
     }
@@ -172,22 +177,42 @@ function processData(aData) {
     return oCharts;
 }
 
+//funzione che clona template e inserische in html
+function templateHtml(aData) {
+    //clono template e inserisco in html
+    var template = $('.template .chart').clone();
+    template.addClass(aData.template);
+    template.find('chart__title').html(aData.label);
+    template.find('canvas').addClass(aData.canvas);
+    var canvas = template.find('canvas');
+    $('.results').append(template);
+    //ritorno il canvas
+    return canvas;
+}
+
 //Funzione che inserisce chart
 function addChart(aData) {
+
+    var canvas = templateHtml(aData);
     var dataset;
+
     //se dato singolo
     if(aData.data){
+        //se è line solo un colore di bg
+        var backgroundColor =  (aData.type === 'line') ? aData.backgroundColor[1] : aData.backgroundColor;
         dataset = [{
             label: aData.label,
-            backgroundColor: aData.backgroundColor,
-            borderColor: aData.borderColor[aData.borderColor.length - 1], //ultimo colore
+            backgroundColor: backgroundColor,
+            borderColor: 'white',
             data: aData.data
         }];
     //se array di dati
     } else {
         dataset =  aData.datasets
     }
-    var myChart = new Chart(aData.canvas, {
+
+    //crreo chart in canvas
+    var myChart = new Chart(canvas, {
         type: aData.type,
         data: {
             labels: aData.labels,
@@ -197,13 +222,6 @@ function addChart(aData) {
     });
 
 }
-
-function createColorRandom(opacity) {
-    var randomColor = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ', ' + opacity + ')';
-    return randomColor;
-}
-
-
 
 /***************************************************
                     COLOR PALETTE
