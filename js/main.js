@@ -43122,18 +43122,23 @@ module.exports = function(module) {
 /*!************************!*\
   !*** ./src/js/main.js ***!
   \************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _palette_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./palette.js */ "./src/js/palette.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 var Chart = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/src/chart.js");
 
-var levelUser = $('body').data('level');
-var baseColorChart = new Hsl(89, 89, 65);
-var palette = new SetColorPalette(baseColorChart);
+var levelUser = $('body').data('level'); //importo tutte le funzioni in palette.js con namespace ColorPalette
+
+
+var baseColorChart = new _palette_js__WEBPACK_IMPORTED_MODULE_0__["Hsl"](89, 89, 65);
+var palette = new _palette_js__WEBPACK_IMPORTED_MODULE_0__["SetColorPalette"](baseColorChart);
 var MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 $(document).ready(function () {
   $.ajax({
@@ -43218,7 +43223,7 @@ function processData(aData) {
     } //se è un numero dispari aumento di 1 colorpalette accetta solo dati pari
 
 
-    if (!isEven(numColors)) {
+    if (!_palette_js__WEBPACK_IMPORTED_MODULE_0__["isEven"](numColors)) {
       numColors++;
     } //setto gli step 140 sono i gradi massimi
 
@@ -43320,11 +43325,26 @@ function addChart(aData) {
     options: aData.options || null
   });
 }
+
+/***/ }),
+
+/***/ "./src/js/palette.js":
+/*!***************************!*\
+  !*** ./src/js/palette.js ***!
+  \***************************/
+/*! exports provided: isGreaterThan, isEven, isInRange, Hsl, SetColorPalette */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isGreaterThan", function() { return isGreaterThan; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isEven", function() { return isEven; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isInRange", function() { return isInRange; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Hsl", function() { return Hsl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SetColorPalette", function() { return SetColorPalette; });
 /***************************************************
-                    COLOR PALETTE
+ COLOR PALETTE
  ***************************************************/
-
-
 function isGreaterThan(num, max) {
   if (num > max) {
     return true;
@@ -43544,6 +43564,8 @@ function SetColorPalette(baseColor) {
 
   return this;
 }
+
+
 
 /***/ }),
 

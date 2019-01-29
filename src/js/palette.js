@@ -1,4 +1,6 @@
-// Utilities
+/***************************************************
+ COLOR PALETTE
+ ***************************************************/
 function isGreaterThan(num, max) {
     if (num > max) {
         return true;
@@ -13,9 +15,8 @@ function isInRange(num, min, max) {
 
 function isEven(number) {
     var even = false;
-    var number = number;
 
-    if (number % 2 == 0) {
+    if (number % 2 === 0) {
         even = true;
     }
 
@@ -23,16 +24,8 @@ function isEven(number) {
 }
 
 
-//************************//
-//********Funzioni********//
-//************************//
-
 function Hsl(degree, saturation, brightness) {
     //controllo se i dati sono esatti
-
-    console.log(degree);
-    console.log(saturation);
-    console.log(brightness);
 
     if (isNaN(degree)) throw 'Degree in Not a Number';
     if (!isInRange(degree, 0, 360)) throw 'Degree number out of range';
@@ -60,9 +53,16 @@ function Hsl(degree, saturation, brightness) {
     };
 
     this.printHsl = function () {
-        return 'hsl(' + _degree + ', ' + _saturation + '%, ' + _brightness + '%)';
+        return 'hsl(' + _degree + ',' + _saturation + '%,' + _brightness + '%)';
     };
 
+    this.setBrightness = function (newBrightness) {
+        if (isNaN(newBrightness)) throw 'Brightness in Not a Number';
+        if (!isInRange(newBrightness, 0, 360)) throw 'Brightness number out of range';
+        _brightness = parseFloat(newBrightness.toFixed(2));
+    };
+
+    return this;
 }
 
 function SetColorPalette(baseColor) {
@@ -219,5 +219,7 @@ function SetColorPalette(baseColor) {
 
         return _arrayColors;
     }
+    return this;
 }
 
+export {isGreaterThan, isEven, isInRange, Hsl, SetColorPalette};
