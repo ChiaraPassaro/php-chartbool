@@ -2,7 +2,7 @@ var $ = require("jquery");
 var Chart = require('chart.js');
 var levelUser = $('body').data('level');
 
-var thisColor = new Hsl(0,89,50);
+var thisColor = new Hsl(89,89,50);
 console.log(thisColor.printHsl());
 var palette =  new SetColorPalette(thisColor);
 
@@ -32,7 +32,7 @@ $(document).ready(function () {
         success: function (data) {
             //console.log(data);
             if(levelUser){
-                modifyData(JSON.parse(data));
+                processData(JSON.parse(data));
             }
         },
         error: function (err) {
@@ -43,7 +43,7 @@ $(document).ready(function () {
 });
 
 //Funzione che prepara i dati
-function modifyData(aData) {
+function processData(aData) {
     //preparo i dati per chartjs
     var oCharts = {
         "fatturato": {
@@ -88,29 +88,35 @@ function modifyData(aData) {
         for (var dataInChartData in aData[chartData].data) {
             var numColors = Object.keys(aData[chartData].data).length;
         }
-        //se è un numero dispari aumento di 1
+
+        //se è un numero dispari aumento di 1 colorpalette accetta solo dati pari
         if(!isEven(numColors)){
             numColors++;
             var notEven = true;
         }
 
+        //setto gli step 140 sono i gradi massimi
+        var step = Math.floor(140/numColors);
+        
         //genero palette
-        var colors = palette.complementar(numColors, 10);
+        var colors = palette.complementar(numColors, step);
 
         for (var dataInChartData in aData[chartData].data) {
             var thisData = [];
             //se è un oggetto e non un valore singolo
             if(typeof aData[chartData].data[dataInChartData] === 'object'){
+                //sostituire con funzione
                 for (var keys in aData[chartData].data[dataInChartData]){
                     thisData.push(aData[chartData].data[dataInChartData][keys]);
                 }
                 var thisColor = colors[index-1].printHsl();
-                console.log(thisColor);
+                var thisColorBorder = colors[index].printHsl();//mettere più scuro
+                //console.log(thisColor);
                 thisChart.datasets.push(
                     {
                         label: dataInChartData ,
-                        borderColor: thisColor.toString() ,
-                        backgroundColor:  thisColor.toString(),
+                        borderColor: thisColorBorder ,
+                        backgroundColor:  thisColor,
                         fill: false,
                         data: thisData,
                         yAxisID: 'y-axis'
@@ -125,13 +131,13 @@ function modifyData(aData) {
                 )
             }
             else{
-
+                //sostituire con funzione
                 //inserisco i dati
                 thisChart.data.push(aData[chartData].data[dataInChartData]);
                 //inserisco dei colori random
                 var thisColor = colors[index-1].printHsl();
                 console.log(thisColor);
-                thisChart.backgroundColor.push(thisColor.toString());
+                thisChart.backgroundColor.push(thisColor);
             }
                 //se labels non ha elementi li inserisco
                 if(thisChart.labels.length < Object.keys(aData[chartData].data).length) {
@@ -193,9 +199,8 @@ function isInRange(num, min, max) {
 
 function isEven(number) {
     var even = false;
-    var number = number;
 
-    if (number % 2 == 0) {
+    if (number % 2 === 0) {
         even = true;
     }
 
