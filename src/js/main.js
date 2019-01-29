@@ -51,44 +51,53 @@ $(document).ready(function () {
 //Funzione che prepara i dati
 function processData(aData) {
     //preparo i dati per chartjs
-    var oCharts = {
-        "fatturato": {
-            "template": '.chart-sales-month',
-            "canvas": '.chart-sales-month',
-            "label": 'Fatturato mensile',
-            "backgroundColor": [],
-            "borderColor": [],
-            "labels": MONTH,
-            "data": [],
-            "type": '',
-            "access": ''
-        },
-        "fatturato_by_agent": {
-            "template": '.chart-sales-man',
-            "canvas": '.chart-sales-man',
-            "label": 'Fatturato per Agente',
-            "backgroundColor": [],
-            "borderColor": [],
-            "labels": [],
-            "data": [],
-            "type": '',
-            "access": ''
-        },
-        "team_efficiency": {
-            "template": '.chart-team',
-            "canvas": '.chart-team',
-            "label": 'Efficienza Team',
-            "labels": MONTH,
-            "datasets": [],
-            "type": '',
-            "options": {
-                scales: {
-                    yAxes: []
-                }
-            },
-            "access": ''
-        }
-    };
+    var oCharts = {};
+    //se un tipo di chart è presente allora la inserisco in oCharts
+    if(aData.hasOwnProperty('fatturato')){
+        oCharts['fatturato'] =
+            {
+                "template": '.chart-sales-month',
+                "canvas": '.chart-sales-month',
+                "label": 'Fatturato mensile',
+                "backgroundColor": [],
+                "borderColor": [],
+                "labels": MONTH,
+                "data": [],
+                "type": '',
+                "access": ''
+            };
+    }
+    if(aData.hasOwnProperty('fatturato_by_agent')){
+        oCharts['fatturato_by_agent'] =
+            {
+                "template": '.chart-sales-man',
+                "canvas": '.chart-sales-man',
+                "label": 'Fatturato per Agente',
+                "backgroundColor": [],
+                "borderColor": [],
+                "labels": [],
+                "data": [],
+                "type": '',
+                "access": ''
+            };
+    }
+    if(aData.hasOwnProperty('team_efficiency')){
+        oCharts['team_efficiency'] =
+            {
+                "template": '.chart-team',
+                "canvas": '.chart-team',
+                "label": 'Efficienza Team',
+                "labels": MONTH,
+                "datasets": [],
+                "type": '',
+                "options": {
+                    scales: {
+                        yAxes: []
+                    }
+                },
+                "access": ''
+            };
+    }
     //leggo i dati in ingresso
     //per ogni tipo di chart
     for (var chartData in aData) {

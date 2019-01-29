@@ -43159,8 +43159,10 @@ $(document).ready(function () {
 
 function processData(aData) {
   //preparo i dati per chartjs
-  var oCharts = {
-    "fatturato": {
+  var oCharts = {}; //se un tipo di chart è presente allora la inserisco in oCharts
+
+  if (aData.hasOwnProperty('fatturato')) {
+    oCharts['fatturato'] = {
       "template": '.chart-sales-month',
       "canvas": '.chart-sales-month',
       "label": 'Fatturato mensile',
@@ -43170,8 +43172,11 @@ function processData(aData) {
       "data": [],
       "type": '',
       "access": ''
-    },
-    "fatturato_by_agent": {
+    };
+  }
+
+  if (aData.hasOwnProperty('fatturato_by_agent')) {
+    oCharts['fatturato_by_agent'] = {
       "template": '.chart-sales-man',
       "canvas": '.chart-sales-man',
       "label": 'Fatturato per Agente',
@@ -43181,8 +43186,11 @@ function processData(aData) {
       "data": [],
       "type": '',
       "access": ''
-    },
-    "team_efficiency": {
+    };
+  }
+
+  if (aData.hasOwnProperty('team_efficiency')) {
+    oCharts['team_efficiency'] = {
       "template": '.chart-team',
       "canvas": '.chart-team',
       "label": 'Efficienza Team',
@@ -43195,9 +43203,10 @@ function processData(aData) {
         }
       },
       "access": ''
-    }
-  }; //leggo i dati in ingresso
+    };
+  } //leggo i dati in ingresso
   //per ogni tipo di chart
+
 
   for (var chartData in aData) {
     var thisChart = oCharts[chartData];
