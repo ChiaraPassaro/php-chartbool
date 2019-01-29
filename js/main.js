@@ -43133,7 +43133,6 @@ var Chart = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/src/cha
 
 var levelUser = $('body').data('level');
 var thisColor = new Hsl(89, 89, 50);
-console.log(thisColor.printHsl());
 var palette = new SetColorPalette(thisColor);
 var MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 $(document).ready(function () {
@@ -43146,7 +43145,11 @@ $(document).ready(function () {
     success: function success(data) {
       //console.log(data);
       if (levelUser) {
-        processData(JSON.parse(data));
+        var processedData = processData(JSON.parse(data)); //chiamo addChart per ogni chart trovata
+
+        for (var chart in processedData) {
+          addChart(processedData[chart]);
+        }
       }
     },
     error: function error(err) {
@@ -43162,6 +43165,7 @@ function processData(aData) {
       "canvas": $('.chart-sales-month'),
       "label": 'Fatturato mensile',
       "backgroundColor": [],
+      "borderColor": [],
       "labels": MONTH,
       "data": [],
       "type": '',
@@ -43171,6 +43175,7 @@ function processData(aData) {
       "canvas": $('.chart-sales-man'),
       "label": 'Fatturato per Agente',
       "backgroundColor": [],
+      "borderColor": [],
       "labels": [],
       "data": [],
       "type": '',
@@ -43189,7 +43194,8 @@ function processData(aData) {
       },
       "access": ''
     }
-  };
+  }; //leggo i dati in ingresso
+  //per ogni tipo di chart
 
   for (var chartData in aData) {
     var thisChart = oCharts[chartData];
@@ -43209,21 +43215,22 @@ function processData(aData) {
 
     var step = Math.floor(140 / numColors); //genero palette
 
-    var colors = palette.complementar(numColors, step);
+    var colors = palette.complementar(numColors, step); //per ogni data presente nella chart
 
     for (var dataInChartData in aData[chartData].data) {
-      var thisData = []; //se è un oggetto e non un valore singolo
+      var thisData = [];
+      var thisColor;
+      var thisColorBorder; //se è un oggetto e non un valore singolo
 
       if (_typeof(aData[chartData].data[dataInChartData]) === 'object') {
-        //sostituire con funzione
         for (var keys in aData[chartData].data[dataInChartData]) {
           thisData.push(aData[chartData].data[dataInChartData][keys]);
-        }
+        } //setto i colori
 
-        var thisColor = colors[index - 1].printHsl();
-        var thisColorBorder = colors[index].printHsl(); //mettere più scuro
-        //console.log(thisColor);
 
+        thisColor = colors[index - 1].printHsl();
+        colors[index - 1].setBrightness(80);
+        thisColorBorder = colors[index - 1].printHsl();
         thisChart.datasets.push({
           label: dataInChartData,
           borderColor: thisColorBorder,
@@ -43237,26 +43244,28 @@ function processData(aData) {
           type: 'linear'
         });
       } else {
-        //sostituire con funzione
         //inserisco i dati
-        thisChart.data.push(aData[chartData].data[dataInChartData]); //inserisco dei colori random
+        thisChart.data.push(aData[chartData].data[dataInChartData]); //setto i colori
 
-        var thisColor = colors[index - 1].printHsl();
-        console.log(thisColor);
+        thisColor = colors[index - 1].printHsl();
+        colors[index - 1].setBrightness(70);
+        thisColorBorder = colors[index - 1].printHsl();
         thisChart.backgroundColor.push(thisColor);
+        thisChart.borderColor.push(thisColorBorder);
       } //se labels non ha elementi li inserisco
 
 
       if (thisChart.labels.length < Object.keys(aData[chartData].data).length) {
         thisChart.labels.push(dataInChartData);
-      }
+      } //inserisco livello accesso
+
 
       thisChart.access = aData[chartData].access;
       index++;
     }
-
-    addChart(thisChart);
   }
+
+  return oCharts;
 } //Funzione che inserisce chart
 
 
@@ -43267,14 +43276,14 @@ function addChart(aData) {
     dataset = [{
       label: aData.label,
       backgroundColor: aData.backgroundColor,
-      borderColor: 'hsl(100,89%,100%)',
+      borderColor: aData.borderColor[aData.borderColor.length - 1],
+      //ultimo colore
       data: aData.data
     }]; //se array di dati
   } else {
     dataset = aData.datasets;
   }
 
-  console.log(dataset);
   var myChart = new Chart(aData.canvas, {
     type: aData.type,
     data: {
@@ -43288,7 +43297,10 @@ function addChart(aData) {
 function createColorRandom(opacity) {
   var randomColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ', ' + opacity + ')';
   return randomColor;
-} // COLOR PALETTE
+}
+/***************************************************
+                    COLOR PALETTE
+ ***************************************************/
 
 
 function isGreaterThan(num, max) {
@@ -43315,10 +43327,6 @@ function isEven(number) {
 
 function Hsl(degree, saturation, brightness) {
   //controllo se i dati sono esatti
-
-  /*console.log(degree);
-  console.log(saturation);
-  console.log(brightness);*/
   if (isNaN(degree)) throw 'Degree in Not a Number';
   if (!isInRange(degree, 0, 360)) throw 'Degree number out of range';
   if (isNaN(saturation)) throw 'Saturation in Not a Number';
@@ -43346,6 +43354,12 @@ function Hsl(degree, saturation, brightness) {
 
   this.printHsl = function () {
     return 'hsl(' + _degree + ',' + _saturation + '%,' + _brightness + '%)';
+  };
+
+  this.setBrightness = function (newBrightness) {
+    if (isNaN(newBrightness)) throw 'Brightness in Not a Number';
+    if (!isInRange(newBrightness, 0, 360)) throw 'Brightness number out of range';
+    _brightness = parseFloat(newBrightness.toFixed(2));
   };
 
   return this;
